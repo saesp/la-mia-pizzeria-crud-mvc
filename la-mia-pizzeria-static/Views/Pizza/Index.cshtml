@@ -21,8 +21,8 @@
                             <img src="@pizza.Image" width="100%" height="275" />
                             <div class="text-danger mb-1">@pizza.Price €</div>
                             <div class="mb-2">@pizza.Category</div>
-                            <a href="@Url.Action("Details", "Pizza", new {id= pizza.Id})" class="mr-2"><button class="p-1 rounded border-0 bg-dark text-white">Visualizza</button></a>
-                            @*<a href="@Url.Action("Edit", "Pizza", new {id= pizza.Id})"><button class="p-1 rounded border-0 bg-dark text-white">Modifica</button></a>*@
+                            <a href="@Url.Action("Details", "Pizza", new {id= pizza.Id})" class="mr-2"><button class="btn-info">Visualizza</button></a>
+                            <a href="@Url.Action("Edit", "Pizza", new {id= pizza.Id})"><button class="btn-info">Modifica</button></a>
                         </div>
                     </div>
                 </li>
