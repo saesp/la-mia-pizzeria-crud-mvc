@@ -17,7 +17,7 @@ namespace la_mia_pizzeria_static.Controllers
         public IActionResult Details(int id)
         {
             var pizza = Pizza.pizzas.FirstOrDefault(p => p.Id == id);
-            
+
             return View(pizza);
         }
 
@@ -85,6 +85,27 @@ namespace la_mia_pizzeria_static.Controllers
             else
             {
                 return NotFound(); //restituisce errore 404
+            }
+        }
+
+
+        //Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            var pizzaDelete = Pizza.pizzas.Where(p => p.Id == id).FirstOrDefault();
+
+            if (pizzaDelete != null)
+            {
+                Pizza.pizzas.Remove(pizzaDelete);
+                //context.SaveChanges();  per db
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return NotFound();
             }
         }
     }
