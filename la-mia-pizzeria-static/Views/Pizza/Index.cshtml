@@ -24,9 +24,9 @@
 
                             <div class="mb-2">@pizza.Category</div>
 
-                            <a href="@Url.Action("Details", "Pizza", new {id= pizza.Id})" class="mr-2"><button class="btn-info">Visualizza</button></a>
+                            <a href="@Url.Action("View", "Pizza", new {id= pizza.Id})" class="mr-2"><button class="btn-info">Visualizza</button></a>
 
-                            <a href="@Url.Action("Edit", "Pizza", new {id= pizza.Id})"><button class="btn-info">Modifica</button></a>
+                            <a href="@Url.Action("Edit", "Pizza", new {id= pizza.Id})"><button class="btn-danger">Modifica</button></a>
 
                             <form asp-controller="Pizza" asp-action="Delete" asp-route-id="@pizza.Id" method="post">
                                 @Html.AntiForgeryToken()
