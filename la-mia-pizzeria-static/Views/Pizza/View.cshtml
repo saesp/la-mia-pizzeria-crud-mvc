@@ -1,15 +1,17 @@
-﻿@model Pizza;
+﻿@*@model Pizza;*@
 @*Model == Pizza*@
+
+@model PizzaFormModel
 
 <div class="container">
 
      <div class="d-flex gap-4">
         <div class="">
-            <h1 class="display-4 mb-4">Pizza @Model.Name</h1>
-            <p>@Model.Description</p>
-            <div class="text-danger"><b>Prezzo:</b> @Model.Price €</div>
+            <h1 class="display-4 mb-4">Pizza @Model.Pizza.Name</h1>
+            <p>@Model.Pizza.Description</p>
+            <div class="text-danger"><b>Prezzo:</b> @Model.Pizza.Price €</div>
         </div>
-        <img class="" src="@Model.Image" width="50%" />
+        <img class="" src="@Model.Pizza.Image" width="50%" />
      </div>
 
 </div>

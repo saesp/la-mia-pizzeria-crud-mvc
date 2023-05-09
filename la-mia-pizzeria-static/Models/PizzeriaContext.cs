@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace la_mia_pizzeria_static.Models
 {
     // comunicare a .NET la configurazione del nostro DB e delle classi da usare
-    public class SchoolContext : DbContext
+    public class PizzeriaContext : DbContext
     {
         public DbSet<Pizza> Pizzas { get; set; }
         public DbSet<Category> Categories { get; set; }

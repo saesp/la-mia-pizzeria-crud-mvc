@@ -1,4 +1,5 @@
-﻿@model Pizza
+﻿@*@model Pizza*@
+@model PizzaFormModel
 
 <div class="container">
 
@@ -7,29 +8,32 @@
 
         <div class="mb-3">
             <strong>Nome:</strong>
-            <input asp-for="Name" class="d-block w-100" />
-            <span asp-validation-for="Name" class="text-danger"></span> @*qui andrà il messaggio di errore della validazione*@
+            <input asp-for="Pizza.Name" class="d-block w-100" />
+            <span asp-validation-for="Pizza.Name" class="text-danger"></span> @*qui andrà il messaggio di errore della validazione*@
         </div>
         <div class="mb-3">
             <strong>Descrizione:</strong>
-            <textarea asp-for="Description" class="d-block w-100" rows="5"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
+            <textarea asp-for="Pizza.Description" class="d-block w-100" rows="5"></textarea>
+            <span asp-validation-for="Pizza.Description" class="text-danger"></span>
         </div>
         <div class="mb-3">
             <strong>Immagine:</strong>
-            <input asp-for="Image" class="d-block w-100" />
-            <span asp-validation-for="Image" class="text-danger"></span>
+            <input asp-for="Pizza.Image" class="d-block w-100" />
+            <span asp-validation-for="Pizza.Image" class="text-danger"></span>
         </div>
         <div class="mb-3">
             <strong>Prezzo:</strong>
-            <input asp-for="Price" class="d-block w-100" />
-            <span asp-validation-for="Price" class="text-danger"></span>
+            <input asp-for="Pizza.Price" class="d-block w-100" />
+            <span asp-validation-for="Pizza.Price" class="text-danger"></span>
         </div>
         <div class="mb-3">
             <strong>Categoria:</strong>
-            <select asp-for="Category">
-                <option value="Rossa">Rossa</option>
-                <option value="Bianca">Bianca</option>
+            <select asp-for="Pizza.CategoryId">
+                <option value="">Scegli</option>
+                @foreach(Category category in Model.Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
             </select>
         </div>
 

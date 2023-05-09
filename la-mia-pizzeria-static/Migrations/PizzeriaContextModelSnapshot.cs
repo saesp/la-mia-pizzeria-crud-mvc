@@ -10,8 +10,8 @@ using la_mia_pizzeria_static.Models;
 
 namespace la_mia_pizzeria_static.Migrations
 {
-    [DbContext(typeof(SchoolContext))]
-    partial class SchoolContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(PizzeriaContext))]
+    partial class PizzeriaContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -56,7 +56,7 @@ namespace la_mia_pizzeria_static.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -91,9 +91,7 @@ namespace la_mia_pizzeria_static.Migrations
                 {
                     b.HasOne("la_mia_pizzeria_static.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
                 });

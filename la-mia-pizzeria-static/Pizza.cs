@@ -10,7 +10,6 @@ namespace la_mia_pizzeria_static
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Il campo è obbligatorio.")]
-        [Range(2, 100, ErrorMessage = "Il campo deve rientare nel range di 2-100 caratteri.")]
         public string Name { get; set; }
 
         [Range(5, 1000, ErrorMessage = "Il campo deve rientare nel range di 5-1000 caratteri.")]
@@ -24,8 +23,8 @@ namespace la_mia_pizzeria_static
         public int Price { get; set; }
 
         //relazione uno a molti
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
 
 
         //costruttore vuoto per permettere la creazione tramite form di nuovi oggetti Pizza
