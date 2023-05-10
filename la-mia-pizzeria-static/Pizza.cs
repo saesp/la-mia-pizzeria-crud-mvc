@@ -4,8 +4,8 @@ namespace la_mia_pizzeria_static
 {
     //VERSIONE CON DB
     public class Pizza
-    {
-        //attributi = colonne
+    {   //attributi = colonne
+
         [Key]
         public int Id { get; set; }
 
@@ -15,7 +15,7 @@ namespace la_mia_pizzeria_static
         [Range(5, 1000, ErrorMessage = "Il campo deve rientare nel range di 5-1000 caratteri.")]
         public string? Description { get; set; }
 
-        [StringLength(200, ErrorMessage = "Il campo deve rientare nel range di 5-500 caratteri.")]
+        [StringLength(1000, ErrorMessage = "Il campo deve avere max 1000 caratteri.")]
         public string? Image { get; set; }
 
         [Required(ErrorMessage = "Il campo è obbligatorio.")]
@@ -26,39 +26,14 @@ namespace la_mia_pizzeria_static
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
 
+        //relazione molti a molti
+        public List<Ingredient>? Ingredients { get; set; }
+
 
         //costruttore vuoto per permettere la creazione tramite form di nuovi oggetti Pizza
-        public Pizza() {}
-
-        //public Pizza(int id, string name, string? description, string? image, int price, string category)
-        //{
-        //    Id = id;
-        //    Name = name;
-        //    Description = description;
-        //    Image = image;
-        //    Price = price;
-        //    Category = category;
-        //}
+        public Pizza() { }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 
@@ -149,4 +124,4 @@ namespace la_mia_pizzeria_static
     //        return ValidationResult.Success;
     //    }
     //}
-}
+//}
