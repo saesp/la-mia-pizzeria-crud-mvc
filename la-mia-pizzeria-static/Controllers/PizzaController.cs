@@ -1,7 +1,10 @@
 ﻿using la_mia_pizzeria_static.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Linq;
 using System.Runtime.ConstrainedExecution;
 //L’elenco delle pizze ora va passato come model dal controller, e la view deve utilizzarlo per mostrare l’html corretto.
 //Gestiamo anche la possibilità che non ci siano pizze nell’elenco: in quel caso dobbiamo mostrare un messaggio che indichi all’utente che non ci sono pizze presenti nella nostra applicazione.
@@ -10,6 +13,8 @@ namespace la_mia_pizzeria_static.Controllers
 {
     public class PizzaController : Controller
     {
+        private IEnumerable<Ingredient> ingredients;
+
         public IActionResult Index()
         {
             using (PizzeriaContext context = new PizzeriaContext())
@@ -20,6 +25,7 @@ namespace la_mia_pizzeria_static.Controllers
             }
         }
 
+
         // CRUD
 
         //Create
@@ -29,11 +35,25 @@ namespace la_mia_pizzeria_static.Controllers
             using (PizzeriaContext context = new PizzeriaContext())
             {
                 List<Category> categories = context.Categories.ToList();
+                List<Ingredient> ingredients = context.Ingredients.ToList();
 
                 //creazione model da passare alla pagina get
                 PizzaFormModel model = new PizzaFormModel();
                 model.Pizza = new Pizza();
                 model.Categories = categories;
+                // many to many
+                List<SelectListItem> listIngredients = new();
+                foreach(Ingredient ingredient in ingredients)
+                {
+                    listIngredients.Add(
+                        new SelectListItem()
+                        {
+                            Text = ingredient.Name,
+                            Value = ingredient.Id.ToString()
+                        }
+                    ); 
+                }
+                model.Ingredients = listIngredients; 
 
                 return View("Create", model);
             }
@@ -54,10 +74,19 @@ namespace la_mia_pizzeria_static.Controllers
                 pizzaCreate.Description = data.Pizza.Description;
                 pizzaCreate.Image = data.Pizza.Image;
                 pizzaCreate.Price = data.Pizza.Price;
-                pizzaCreate.CategoryId = data.Pizza.CategoryId;
+                pizzaCreate.CategoryId = data.Pizza.CategoryId; //one to many
+                if (data.SelectIngredients != null) //many to many
+                {
+                    foreach (string selectedIngredientId in data.SelectIngredients) 
+                    {
+                        int selectedIntIngredientId = int.Parse(selectedIngredientId); //Parse() converte da un tipo all'altro
+                        Ingredient ingredient = context.Ingredients.Where(m => m.Id == selectedIntIngredientId).FirstOrDefault(); 
+
+                        pizzaCreate.Ingredients.Add(ingredient);
+                    }
+                }
 
                 context.Pizzas.Add(pizzaCreate);
-
                 context.SaveChanges();
 
                 return RedirectToAction("Index");
@@ -86,13 +115,29 @@ namespace la_mia_pizzeria_static.Controllers
             using (PizzeriaContext context = new PizzeriaContext())
             {
                 //passo i dati per avere i valori degli attributi nella pagina Edit
-                Pizza pizzaEdit = context.Pizzas.FirstOrDefault(p => p.Id == id);
+                var pizzaEdit = context.Pizzas.Include(m => m.Ingredients).FirstOrDefault(p => p.Id == id);
 
-                    List<Category> categories = context.Categories.ToList();
+                List<Category> categories = context.Categories.ToList();
+                List<Ingredient> ingredients = context.Ingredients.ToList();
 
-                    PizzaFormModel model = new PizzaFormModel();
-                    model.Pizza = pizzaEdit;
-                    model.Categories = categories;
+                //creazione model da passare alla pagina get
+                PizzaFormModel model = new PizzaFormModel();
+
+                model.Pizza = pizzaEdit;
+                model.Categories = categories;
+                List<SelectListItem> listIngredients = new(); // many to many
+                foreach (Ingredient ingredient in ingredients)
+                {
+                    listIngredients.Add(
+                        new SelectListItem()
+                        {
+                            Text = ingredient.Name,
+                            Value = ingredient.Id.ToString(),
+                            Selected = pizzaEdit.Ingredients.Any(m=>m.Id == ingredient.Id) //Any() restituisce un valore booleano che indica se l'enumerazione soddisfa una determinata condizione
+                        }
+                    );
+                }
+                model.Ingredients = listIngredients;
 
 
                 return View("Edit", model);
@@ -103,9 +148,13 @@ namespace la_mia_pizzeria_static.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, PizzaFormModel data)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("Edit", data);
+            }
             using (PizzeriaContext context = new PizzeriaContext())
             {
-                var pizzaEdit = context.Pizzas.Where(p => p.Id == id).FirstOrDefault(); //FirstOrDefaut prendel'id corrispondente e se non lo trova darà null
+                var pizzaEdit = context.Pizzas.Where(p => p.Id == id).Include(m=>m.Ingredients).FirstOrDefault(); //FirstOrDefaut prende l'id corrispondente e se non lo trova darà null
 
                 if (pizzaEdit != null)
                 {
@@ -114,7 +163,17 @@ namespace la_mia_pizzeria_static.Controllers
                     pizzaEdit.Image = data.Pizza.Image;
                     pizzaEdit.Price = data.Pizza.Price;
                     pizzaEdit.CategoryId = data.Pizza.CategoryId;
-                    
+                    if (data.SelectIngredients != null) //many to many
+                    {
+                        foreach (string selectedIngredientId in data.SelectIngredients)
+                        {
+                            int selectedIntIngredientId = int.Parse(selectedIngredientId);
+                            Ingredient ingredient = context.Ingredients.Where(m => m.Id == selectedIntIngredientId).FirstOrDefault();
+
+                            pizzaEdit.Ingredients.Add(ingredient);
+                        }
+                    }
+
                     context.SaveChanges();
 
                     return RedirectToAction("Index");

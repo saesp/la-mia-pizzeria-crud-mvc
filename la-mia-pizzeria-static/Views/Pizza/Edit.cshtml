@@ -37,6 +37,10 @@
                 }
             </select>
         </div>
+        <div class="mb-3">
+            <strong>Ingredienti:</strong>
+            <select asp-for="SelectIngredients" multiple="multiple" size="5" asp-items="@Model.Ingredients"></select>
+        </div>
 
         <div class="text-end">
             <button type="submit" class="btn-dark">Modifica pizza</button>
