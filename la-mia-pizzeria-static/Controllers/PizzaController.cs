@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
-//L’elenco delle pizze ora va passato come model dal controller, e la view deve utilizzarlo per mostrare l’html corretto.
-//Gestiamo anche la possibilità che non ci siano pizze nell’elenco: in quel caso dobbiamo mostrare un messaggio che indichi all’utente che non ci sono pizze presenti nella nostra applicazione.
 
 namespace la_mia_pizzeria_static.Controllers
 {
@@ -75,7 +73,8 @@ namespace la_mia_pizzeria_static.Controllers
                 pizzaCreate.Image = data.Pizza.Image;
                 pizzaCreate.Price = data.Pizza.Price;
                 pizzaCreate.CategoryId = data.Pizza.CategoryId; //one to many
-                if (data.SelectIngredients != null) //many to many
+                pizzaCreate.Ingredients = new List<Ingredient>(); //many to many
+                if (data.SelectIngredients != null) 
                 {
                     foreach (string selectedIngredientId in data.SelectIngredients) 
                     {
@@ -85,7 +84,6 @@ namespace la_mia_pizzeria_static.Controllers
                         pizzaCreate.Ingredients.Add(ingredient);
                     }
                 }
-
                 context.Pizzas.Add(pizzaCreate);
                 context.SaveChanges();
 
@@ -100,11 +98,10 @@ namespace la_mia_pizzeria_static.Controllers
         {
             using (PizzeriaContext context = new PizzeriaContext())
             {
-                var pizza = context.Pizzas.Where(p => p.Id == id).Include(p => p.Category).FirstOrDefault(); //metodo Include() per recuperare Category assieme alla Pizza
+                Pizza pizza = context.Pizzas.Where(p => p.Id == id).Include(p => p.Category).Include(m => m.Ingredients).FirstOrDefault(); //metodo Include() per recuperare Category e Ingredients assieme alla Pizza
 
                 return View(pizza);
             }
-
         }
 
 
