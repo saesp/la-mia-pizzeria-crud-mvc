@@ -1,4 +1,5 @@
 ﻿using la_mia_pizzeria_static.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace la_mia_pizzeria_static.Controllers
     {
         private IEnumerable<Ingredient> ingredients;
 
+        //se non inserisco [Http...] ci sarà di deafault [HttpGet]
         public IActionResult Index()
         {
             using (PizzeriaContext context = new PizzeriaContext())
@@ -27,6 +29,7 @@ namespace la_mia_pizzeria_static.Controllers
         // CRUD
 
         //Create
+        [Authorize(Roles = "ADMIN")] //[Autorize] protegge l'action dai non autorizzati, Roles specifica quali ruoli hanno gli utenti autenticati per accedere alle varie actions
         [HttpGet]
         public IActionResult Create()
         {
@@ -57,6 +60,7 @@ namespace la_mia_pizzeria_static.Controllers
             }
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(PizzaFormModel data)
@@ -93,12 +97,13 @@ namespace la_mia_pizzeria_static.Controllers
 
 
         //Read
-        [HttpGet] //se non inserisco [Http...] ci sarà di deafault [HttpGet]
+        [Authorize(Roles = "ADMIN,USER")]
+        [HttpGet]
         public IActionResult View(int id)
         {
             using (PizzeriaContext context = new PizzeriaContext())
             {
-                Pizza pizza = context.Pizzas.Where(p => p.Id == id).Include(p => p.Category).Include(m => m.Ingredients).FirstOrDefault(); //metodo Include() per recuperare Category e Ingredients assieme alla Pizza
+                Pizza pizza = context.Pizzas.Where(p => p.Id == id).Include(p => p.Category).Include(m => m.Ingredients).FirstOrDefault(); //metodo Include() per recuperare Category e Ingredients assieme a Pizza
 
                 return View(pizza);
             }
@@ -106,6 +111,7 @@ namespace la_mia_pizzeria_static.Controllers
 
 
         //Update
+        [Authorize(Roles = "ADMIN")]
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -141,6 +147,7 @@ namespace la_mia_pizzeria_static.Controllers
             }
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, PizzaFormModel data)
@@ -184,6 +191,7 @@ namespace la_mia_pizzeria_static.Controllers
 
 
         //Delete
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)

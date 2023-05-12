@@ -39,6 +39,9 @@
         </div>
         <div class="mb-3">
             <strong>Ingredienti:</strong>
+            <label for="option1">Option 1:</label>
+<input type="checkbox" id="option1" name="options" value="option1">
+
             <select asp-for="SelectIngredients" multiple="multiple" size="5" asp-items="@Model.Ingredients"></select>
         </div>
 

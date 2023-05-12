@@ -1,10 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 
 namespace la_mia_pizzeria_static.Models
 {
-    //comunicare a .NET la configurazione del nostro DB e delle classi da usare
-    public class PizzeriaContext : DbContext
+    //Comunicare a .NET la configurazione del nostro DB e delle classi da usare
+
+    //public class PizzeriaContext : DbContext
+    public class PizzeriaContext : IdentityDbContext<IdentityUser> //il secondo serve ad introdurre il sistema di autenticazione nel db
     {
         public DbSet<Pizza> Pizzas { get; set; }
         public DbSet<Category> Categories { get; set; }
